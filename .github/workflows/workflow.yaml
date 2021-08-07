@@ -3,7 +3,7 @@ name: Scandalorian Ingest Build
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   ingest-build-arm:
