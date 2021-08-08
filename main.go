@@ -16,17 +16,12 @@ import (
 
 var (
 	messageBus MessageBus
-	streams    = map[string]string{
-		"discovery": "discovery.requests",
-		//"zonewalk":   "zonewalk.requests", //Isn't online/ready yet
-		"reversedns": "reversedns.reqeusts",
-	}
 )
 
 //MessageBus Interface for making generic connections to message busses
 type MessageBus interface {
 	Connect(host, port string) error
-	Publish(scan *scandaloriantypes.Scan) error
+	Publish(scan *scandaloriantypes.Processor) error
 	Close()
 }
 
@@ -149,16 +144,32 @@ func handlePost(c *gin.Context) {
 
 func enQueueRequest(scanreq *scandaloriantypes.ScanRequest) error {
 	id := uuid.New().String()
-	if len(scanreq.ScanTypes) == 0 {
-		keys := make([]string, len(streams))
-		i := 0
-		for k := range streams {
-			keys[i] = k
-			i++
+	//var scan scandaloriantypes.Scan
+	//scan.RequestID = id
+	//scan.ScanID = uuid.New().String()
+	if scanreq.PortScan != nil || scanreq.ApplicationScan != nil {
+		addrs, err := Hosts(scanreq.Address)
+		if err != nil {
+			return err
 		}
-		scanreq.ScanTypes = keys //TODO:  Do I want to scan everything by default?
+		if len(addrs) > 0 { //Generate lots of scan objects as we're scanning a subnet
+			for _, addr := range addrs {
+				var scan scandaloriantypes.Scan
+				scan.RequestID = id
+				scan.ScanID = uuid.New().String()
+				scan.IP = addr
+				if scanreq.PortScan != nil {
+
+				}
+				if scanreq.ApplicationScan != nil {
+
+				}
+
+			}
+		}
 	}
-	for _, scanType := range scanreq.ScanTypes {
+
+	/*for _, scanType := range scanreq.ScanTypes {
 		addrs, err := Hosts(scanreq.Address)
 		if err != nil {
 			return err
@@ -191,7 +202,7 @@ func enQueueRequest(scanreq *scandaloriantypes.ScanRequest) error {
 			return err
 		}
 
-	}
+	}*/
 	return nil
 }
 
