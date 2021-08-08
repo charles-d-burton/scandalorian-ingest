@@ -131,9 +131,7 @@ func handlePost(c *gin.Context) {
 		}
 		fmt.Println("IP address: ", addr)
 		for _, address := range addr {
-			var req scandaloriantypes.ScanRequest
-			req = scanRequest
-			req.Address = address.String()
+			scanRequest.Address = address.String()
 			if err := enQueueRequest(&scanRequest); err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 				return
