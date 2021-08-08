@@ -33,15 +33,15 @@ func (natsConn *NatsConn) Connect(host, port string) error {
 }
 
 //Publish push messages to NATS
-func (natsConn *NatsConn) Publish(scan *scandaloriantypes.Scan) error {
+func (natsConn *NatsConn) Publish(scan scandaloriantypes.Scan) error {
 
 	data, err := json.Marshal(scan)
 	if err != nil {
 		return err
 	}
 	log.Infof("Publishing scan: %s", string(data))
-	log.Info("To stream: %s", scan.Stream)
-	msg, err := natsConn.JS.Publish(scan.Stream, data)
+	log.Info("To stream: %s", scan.GetStream())
+	msg, err := natsConn.JS.Publish(scan.GetStream(), data)
 	if err != nil {
 		log.Debug(err)
 		return err

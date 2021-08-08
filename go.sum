@@ -48,6 +48,10 @@ github.com/bketelsen/crypt v0.0.4/go.mod h1:aI6NrJ0pMGgvZKL1iVgXLnfIFJtfV+bKCoqO
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/charles-d-burton/scandalorian-types v0.0.0-20210808225741-63e5bf10ae09 h1:VlraG4iJZz1mDAgYGVoMncIVcvoB4Cn3i0S5opMLo8o=
 github.com/charles-d-burton/scandalorian-types v0.0.0-20210808225741-63e5bf10ae09/go.mod h1:VP+Z9mbl9lORUes0jJtHBGfqbAO8f+DWsxwFAEDR+p0=
+github.com/charles-d-burton/scandalorian-types v0.0.0-20210808231745-769b966bd69c h1:GPBwSxm8IX6qHrSYobLfOi+XeORsqtDCnptG5ig8tIo=
+github.com/charles-d-burton/scandalorian-types v0.0.0-20210808231745-769b966bd69c/go.mod h1:VP+Z9mbl9lORUes0jJtHBGfqbAO8f+DWsxwFAEDR+p0=
+github.com/charles-d-burton/scandalorian-types v0.0.0-20210808232234-0459a98806ae h1:FDLFjd+0XGpYxvdgY3hzoBCTtuNBd0xr5zW4asx34Bs=
+github.com/charles-d-burton/scandalorian-types v0.0.0-20210808232234-0459a98806ae/go.mod h1:VP+Z9mbl9lORUes0jJtHBGfqbAO8f+DWsxwFAEDR+p0=
 github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWRnGsAI=
 github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e/go.mod h1:nSuG5e5PlCu98SY8svDHJxuZscDgtXS6KTTbou5AhLI=
 github.com/chzyer/test v0.0.0-20180213035817-a1ea475d72b1/go.mod h1:Q3SI9o4m/ZMnBNeIyt5eFwwo7qiLfzFZmjNmxjkiQlU=

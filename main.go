@@ -21,7 +21,7 @@ var (
 //MessageBus Interface for making generic connections to message busses
 type MessageBus interface {
 	Connect(host, port string) error
-	Publish(scan *scandaloriantypes.Processor) error
+	Publish(scan scandaloriantypes.Scan) error
 	Close()
 }
 
@@ -154,15 +154,21 @@ func enQueueRequest(scanreq *scandaloriantypes.ScanRequest) error {
 		}
 		if len(addrs) > 0 { //Generate lots of scan objects as we're scanning a subnet
 			for _, addr := range addrs {
-				var scan scandaloriantypes.Scan
+				var scan scandaloriantypes.ScanMetaData
 				scan.RequestID = id
 				scan.ScanID = uuid.New().String()
 				scan.IP = addr
-				if scanreq.PortScan != nil {
-
+				if scanreq.PortScan.Run {
+					scanreq.PortScan.SetDefaults(&scan)
+					log.Infof("sending to topic: %s", scanreq.PortScan.GetStream())
+					err = messageBus.Publish(scanreq.PortScan)
+					if err != nil {
+						return err
+					}
 				}
-				if scanreq.ApplicationScan != nil {
-
+				if scanreq.ApplicationScan.Run {
+					log.Info("called application scan")
+					//TODO Implement
 				}
 
 			}

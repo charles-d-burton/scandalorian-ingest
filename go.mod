@@ -3,7 +3,7 @@ module github.com/charles-d-burton/scandalorian-ingest
 go 1.16
 
 require (
-	github.com/charles-d-burton/scandalorian-types v0.0.0-20210808225741-63e5bf10ae09
+	github.com/charles-d-burton/scandalorian-types v0.0.0-20210808232234-0459a98806ae
 	github.com/gin-gonic/gin v1.7.3
 	github.com/go-playground/validator/v10 v10.9.0 // indirect
 	github.com/google/uuid v1.3.0
