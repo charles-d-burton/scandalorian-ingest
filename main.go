@@ -156,7 +156,7 @@ func enQueueRequest(scanreq *scandaloriantypes.ScanRequest) error {
 				scan.RequestID = id
 				scan.ScanID = uuid.New().String()
 				scan.IP = addr
-				if scanreq.PortScan.Run {
+				if scanreq.PortScan != nil && scanreq.PortScan.Run {
 					scanreq.PortScan.SetDefaults(&scan)
 					log.Infof("sending to topic: %s", scanreq.PortScan.GetStream())
 					err = messageBus.Publish(scanreq.PortScan)
@@ -164,7 +164,7 @@ func enQueueRequest(scanreq *scandaloriantypes.ScanRequest) error {
 						return err
 					}
 				}
-				if scanreq.ApplicationScan.Run {
+				if scanreq.ApplicationScan != nil && scanreq.ApplicationScan.Run {
 					log.Info("called application scan")
 					//TODO Implement
 				}
@@ -172,41 +172,6 @@ func enQueueRequest(scanreq *scandaloriantypes.ScanRequest) error {
 			}
 		}
 	}
-
-	/*for _, scanType := range scanreq.ScanTypes {
-		addrs, err := Hosts(scanreq.Address)
-		if err != nil {
-			return err
-		}
-		if len(addrs) > 0 { //Generate lots of scan objects as we're scanning a subnet
-			for _, addr := range addrs {
-				var scan scandaloriantypes.Scan
-				scan.RequestID = id
-				scan.ScanID = uuid.New().String()
-				scan.IP = addr
-				scan.Stream = streams[scanType]
-				log.Infof("Sending to topic: %s", scan.Stream)
-				err = messageBus.Publish(&scan)
-				if err != nil {
-					log.Warn(err)
-					return err
-				}
-			}
-			return nil
-		}
-		var scan scandaloriantypes.Scan
-		scan.RequestID = id
-		scan.ScanID = uuid.New().String()
-		scan.IP = scanreq.Address
-		scan.Stream = streams[scanType]
-		log.Infof("Sending to topic: %s", scan.Stream)
-		err = messageBus.Publish(&scan)
-		if err != nil {
-			log.Warn(err)
-			return err
-		}
-
-	}*/
 	return nil
 }
 
