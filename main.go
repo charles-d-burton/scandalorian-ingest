@@ -145,7 +145,7 @@ func handlePost(c *gin.Context) {
 	}
 
 	if scanRequest.Host != "" {
-		if len(strings.Split(scanRequest.Host, ".")) > 2 { //This check seems.... stupid?
+		if len(strings.Split(scanRequest.Host, ".")) <= 2 { //This check seems.... stupid?
 			log.Debugf("host is hostname not IP: %v", scanRequest.Host)
 			addr, err := net.LookupIP(scanRequest.Host)
 			if err != nil {
