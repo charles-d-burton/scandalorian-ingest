@@ -262,36 +262,36 @@ func inc(ip net.IP) {
 func setPorts(scanreq *scandaloriantypes.ScanRequest) {
 	if scanreq.PortScan.TopTen || scanreq.PortScan.TopHundred || scanreq.PortScan.TopThousand {
 		if scanreq.PortScan.TopTen {
-			scanreq.PortScan.Ports = append(scanreq.PortScan.Ports, top10Ports...)
+			scanreq.PortScan.Ports = generatePortList(top10Ports)
 		}
 		if scanreq.PortScan.TopHundred {
-			scanreq.PortScan.Ports = append(scanreq.PortScan.Ports, top100Ports...)
+			scanreq.PortScan.Ports = generatePortList(top100Ports)
 		}
 		if scanreq.PortScan.TopThousand {
-			scanreq.PortScan.Ports = append(scanreq.PortScan.Ports, top1000Ports...)
+			scanreq.PortScan.Ports = generatePortList(top1000Ports)
 		}
-		scanreq.PortScan.Ports = generatePortList(scanreq.PortScan.Ports)
 	} else {
 		for i := 0; i <= 65535; i++ {
-			scanreq.PortScan.Ports = append(scanreq.PortScan.Ports, strconv.Itoa(i))
+			scanreq.PortScan.Ports = append(scanreq.PortScan.Ports, i)
 		}
 	}
 }
 
 //generatePortList corrects port ranges and deduplicates port list
-func generatePortList(ports []string) []string {
-	set := make(map[string]struct{}) //set with zero byte value
-	var exists = struct{}{}          //zero byte structure
+func generatePortList(ports []string) []int {
+	set := make(map[int]struct{}) //set with zero byte value
+	var exists = struct{}{}       //zero byte structure
 	for _, port := range ports {
 		if strings.Contains(port, "-") {
-			for _, p := range splitPortRange(port) {
+			for _, p := range expandPortRange(port) {
 				set[p] = exists
 			}
 			continue
 		}
-		set[port] = exists
+		p, _ := strconv.Atoi(port)
+		set[p] = exists
 	}
-	newPorts := make([]string, len(set))
+	newPorts := make([]int, len(set))
 	for key := range set {
 		newPorts = append(newPorts, key)
 	}
@@ -299,13 +299,13 @@ func generatePortList(ports []string) []string {
 }
 
 //Expand port ranges
-func splitPortRange(portRange string) []string {
+func expandPortRange(portRange string) []int {
 	ports := strings.Split(portRange, "-")
 	begin, _ := strconv.Atoi(ports[0])
 	end, _ := strconv.Atoi(ports[1])
-	portList := make([]string, end-begin)
+	portList := make([]int, end-begin)
 	for i := begin; i <= end; i++ {
-		portList = append(portList, strconv.Itoa(i))
+		portList = append(portList, i)
 	}
 	return portList
 }
