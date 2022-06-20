@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 
@@ -75,13 +76,15 @@ func handlePost(bus MessageBus) gin.HandlerFunc {
 
 		if scanRequest.Host == "" {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "must set host"})
-		} else if scanRequest.Host != "" && strings.Contains(strings.ToLower(scanRequest.Host), "localhost") {
+		} else if strings.Contains(strings.ToLower(scanRequest.Host), "localhost") {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "cannot scan localhost"})
-		}
-
-		if scanRequest.Host != "" {
-			if len(strings.Split(scanRequest.Host, ".")) <= 2 { //This check seems.... stupid?
+		} else {
+			if !isIPAddr(scanRequest.Host) {
 				log.Debug().Msgf("host is hostname not IP: %v", scanRequest.Host)
+				domain, err := getHostDomain(scanRequest.Host)
+				if err != nil || domain == "" {
+					c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				}
 				addr, err := net.LookupIP(scanRequest.Host)
 				if err != nil {
 					c.JSON(http.StatusBadRequest, gin.H{"error": "unknown host"})
@@ -90,6 +93,7 @@ func handlePost(bus MessageBus) gin.HandlerFunc {
 				fmt.Println("IP address: ", addr)
 				for _, address := range addr {
 					scanRequest.Host = address.String()
+					scanRequest.FQDN = domain
 					if err := enQueueRequest(&scanRequest, bus); err != nil {
 						c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 						return
@@ -140,12 +144,12 @@ func enQueueRequest(scanreq *scandaloriantypes.ScanRequest, bus MessageBus) erro
 		}
 		if len(addrs) > 0 { //Generate lots of scan objects as we're scanning a subnet
 			for _, addr := range addrs {
-				var scan scandaloriantypes.ScanMetaData
-				scan.RequestID = id
-				scan.ScanID = uuid.New().String()
-				scan.IP = addr
+				var scanMeta scandaloriantypes.ScanMetaData
+				scanMeta.RequestID = id
+				scanMeta.IP = addr
+				scanMeta.CustomMeta = scanreq.CustomMeta
 				if scanreq.PortScan != nil && scanreq.PortScan.Run {
-					scanreq.PortScan.SetDefaults(&scan)
+					scanreq.PortScan.SetDefaults(&scanMeta)
 					setPorts(scanreq)
 					log.Debug().Msgf("sending to topic: %s", scanreq.PortScan.GetStream())
 					err = bus.Publish(scanreq.PortScan)
@@ -194,6 +198,26 @@ func inc(ip net.IP) {
 			break
 		}
 	}
+}
+
+func isIPAddr(host string) bool {
+	addr := net.ParseIP(host)
+	if addr != nil {
+		return true
+	}
+	return false
+}
+
+func getHostDomain(host string) (domain string, err error) {
+	u, err := url.ParseRequestURI(host)
+	if err != nil {
+		u, repErr := url.ParseRequestURI("https://" + host)
+		if repErr != nil {
+			return "", errors.New(fmt.Sprintf("invalid host: %v", host))
+		}
+		return u.Host, nil
+	}
+	return u.Host, nil
 }
 
 func setPorts(scanreq *scandaloriantypes.ScanRequest) {
