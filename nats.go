@@ -4,7 +4,7 @@ import (
 	scandaloriantypes "github.com/charles-d-burton/scandalorian-types"
 	jsoniter "github.com/json-iterator/go"
 	nats "github.com/nats-io/nats.go"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
@@ -17,7 +17,7 @@ type NatsConn struct {
 
 //Connect to the NATS message queue
 func (natsConn *NatsConn) Connect(host, port string) error {
-	log.Info("Connecting to NATS: ", host, ":", port)
+	log.Info().Msgf("Connecting to NATS: ", host, ":", port)
 	nh := "nats://" + host + ":" + port
 	conn, err := nats.Connect(nh, nats.MaxReconnects(5))
 	if err != nil {
@@ -39,14 +39,14 @@ func (natsConn *NatsConn) Publish(scan scandaloriantypes.Scan) error {
 	if err != nil {
 		return err
 	}
-	log.Infof("Publishing scan: %s", string(data))
-	log.Info("To stream: %s", scan.GetStream())
+	log.Debug().Msgf("Publishing scan: %s", string(data))
+	log.Info().Msgf("To stream: %s", scan.GetStream())
 	msg, err := natsConn.JS.Publish(scan.GetStream(), data)
 	if err != nil {
-		log.Debug(err)
+		log.Debug().Msg(err.Error())
 		return err
 	}
-	log.Debugf("published to %q", msg.Stream)
+	log.Debug().Msgf("published to %q", msg.Stream)
 	return nil
 }
 
