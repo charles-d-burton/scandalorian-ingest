@@ -3,7 +3,7 @@ module github.com/charles-d-burton/scandalorian-ingest
 go 1.17
 
 require (
-	github.com/charles-d-burton/scandalorian-types v0.0.0-20220620163700-a655cad2394f
+	github.com/charles-d-burton/scandalorian-types v0.0.0-20220620171836-771b759d8987
 	github.com/gin-gonic/gin v1.8.1
 	github.com/google/uuid v1.3.0
 	github.com/json-iterator/go v1.1.12
@@ -31,7 +31,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.0.2 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e // indirect
-	golang.org/x/net v0.0.0-20220617184016-355a448f1bc9 // indirect
+	golang.org/x/net v0.0.0-20220621193019-9d032be2e588 // indirect
 	golang.org/x/sys v0.0.0-20220615213510-4f61da869c0c // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect

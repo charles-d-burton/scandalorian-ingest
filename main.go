@@ -147,7 +147,6 @@ func enQueueRequest(scanreq *scandaloriantypes.ScanRequest, bus MessageBus) erro
 				var scanMeta scandaloriantypes.ScanMetaData
 				scanMeta.RequestID = id
 				scanMeta.IP = addr
-				scanMeta.CustomMeta = scanreq.CustomMeta
 				if scanreq.PortScan != nil && scanreq.PortScan.Run {
 					scanreq.PortScan.SetDefaults(&scanMeta)
 					setPorts(scanreq)
